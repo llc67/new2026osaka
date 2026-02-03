@@ -3,78 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>大阪應援 2026</title>
+    <title>大阪應援之旅 2026</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
+        /* 日系配色設定 */
         :root { --osaka-blue: #005CAF; }
-        body { font-family: sans-serif; background: #fcfcfc; margin: 0; }
-        .banner { width: 100%; height: 250px; background: #87CEEB; position: relative; }
-        .banner img { width: 100%; height: 100%; object-fit: cover; }
-        .main-card { margin-top: -40px; border-radius: 40px 40px 0 0; background: white; position: relative; z-index: 10; padding: 25px 20px; min-height: 100vh; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); }
-        .tab-active { background: var(--osaka-blue) !important; color: white !important; }
-        .card { border: 2px solid #333; border-radius: 18px; box-shadow: 4px 4px 0px #333; margin-bottom: 20px; padding: 15px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: #fdfdfd; 
+            margin: 0; 
+            padding-bottom: 40px;
+        }
+        
+        /* Banner 區域 */
+        .banner-container { 
+            width: 100%; 
+            height: 260px; 
+            background-color: #87CEEB; /* 圖片沒出來時顯示天藍色 */
+            position: relative; 
+        }
+        .banner-img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            object-position: center;
+        }
+
+        /* 圓弧銜接內容區 */
+        .main-content { 
+            margin-top: -40px; 
+            border-radius: 40px 40px 0 0; 
+            background: white; 
+            position: relative; 
+            z-index: 10; 
+            padding: 24px 20px; 
+            min-height: 80vh; 
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.05); 
+        }
+
+        /* 樣式組件 */
+        .tab-btn { transition: all 0.2s; }
+        .tab-active { background-color: var(--osaka-blue) !important; color: white !important; transform: scale(1.1); }
+        
+        .card { 
+            border: 2px solid #333; 
+            border-radius: 16px; 
+            box-shadow: 4px 4px 0px #333; 
+            margin-bottom: 16px; 
+            padding: 16px; 
+            background: white; 
+            cursor: pointer;
+        }
+        .card:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #333; }
+        
+        /* 隱藏捲軸 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
+
 <div id="app">
-    <header class="banner">
-        <img src="Gemini_Generated_Image_bjzo0jbjzo0jbjzo.png" alt="Banner">
-        <div class="absolute bottom-14 right-4 flex space-x-2">
-            <button @click="tab='p'" :class="tab==='p'?'tab-active':''" class="p-3 bg-white/90 rounded-full shadow-lg text-blue-600"><i data-lucide="calendar"></i></button>
-            <button @click="tab='i'" :class="tab==='i'?'tab-active':''" class="p-3 bg-white/90 rounded-full shadow-lg text-blue-600"><i data-lucide="info"></i></button>
+    <header class="banner-container">
+        <img src="./picture.png" alt="Osaka Banner" class="banner-img" onerror="this.style.display='none'">
+        
+        <div class="absolute bottom-14 right-6 flex space-x-3">
+            <button @click="currentTab='plan'" :class="['tab-btn p-4 rounded-full shadow-lg flex items-center justify-center', currentTab==='plan' ? 'tab-active' : 'bg-white text-blue-600']">
+                <i data-lucide="calendar-days"></i>
+            </button>
+            <button @click="currentTab='info'" :class="['tab-btn p-4 rounded-full shadow-lg flex items-center justify-center', currentTab==='info' ? 'tab-active' : 'bg-white text-blue-600']">
+                <i data-lucide="info"></i>
+            </button>
+            <button @click="currentTab='shop'" :class="['tab-btn p-4 rounded-full shadow-lg flex items-center justify-center', currentTab==='shop' ? 'tab-active' : 'bg-white text-blue-600']">
+                <i data-lucide="shopping-bag"></i>
+            </button>
         </div>
     </header>
 
-    <main class="main-card">
-        <div v-if="tab==='p'">
-            <div class="flex overflow-x-auto space-x-3 mb-8 pb-2 no-scrollbar">
-                <div v-for="(day, i) in days" :key="i" @click="sIdx=i" :class="sIdx===i?'tab-active shadow-md':'bg-gray-100 text-gray-400'" class="min-w-[65px] p-3 rounded-2xl text-center cursor-pointer transition-all">
-                    <p class="text-xs font-bold uppercase">{{day.w}}</p><p class="text-lg font-bold">{{day.d}}</p>
+    <main class="main-content">
+        
+        <div v-if="currentTab === 'plan'">
+            <div class="flex justify-between items-center bg-blue-50 border border-blue-100 p-4 rounded-2xl mb-6">
+                <div>
+                    <div class="text-xs font-bold text-blue-500 tracking-wider">OSAKA WEATHER</div>
+                    <div class="flex items-baseline mt-1">
+                        <span class="text-3xl font-bold text-gray-800">8°C</span>
+                        <span class="ml-2 text-sm text-gray-500">體感 5°C</span>
+                    </div>
+                </div>
+                <i data-lucide="cloud-sun" class="w-10 h-10 text-yellow-500"></i>
+            </div>
+
+            <div class="flex overflow-x-auto space-x-3 pb-4 mb-2 no-scrollbar">
+                <div v-for="(day, index) in days" :key="index" 
+                     @click="selectedDay = index"
+                     :class="['min-w-[70px] p-3 rounded-2xl text-center cursor-pointer transition-all border-2', selectedDay === index ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-gray-50 text-gray-400 border-transparent']">
+                    <div class="text-xs font-bold uppercase mb-1">{{ day.w }}</div>
+                    <div class="text-xl font-bold">{{ day.d }}</div>
                 </div>
             </div>
-            <div v-for="(item, idx) in itinerary[sIdx]" :key="idx" class="card" @click="goMap(item.n)">
-                <div class="flex justify-between items-start mb-1"><span class="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">{{item.t}}</span><i data-lucide="navigation" class="w-4 h-4 text-blue-500"></i></div>
-                <div class="font-bold text-lg text-gray-800">{{item.time}} {{item.n}}</div>
-                <div class="text-sm text-gray-500 mt-2 bg-gray-50 p-3 rounded-xl italic">「 {{item.note}} 」</div>
+
+            <div class="space-y-4">
+                <div v-for="(item, idx) in itinerary[selectedDay]" :key="idx" 
+                     class="card" @click="openMap(item.n)">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[10px] font-bold text-white bg-blue-500 px-2 py-1 rounded">{{ item.type }}</span>
+                        <div class="flex items-center text-blue-500 text-xs font-bold">
+                            <i data-lucide="navigation" class="w-3 h-3 mr-1"></i> 導航
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="mr-2">{{ item.time }}</span> {{ item.n }}
+                    </h3>
+                    <p class="text-sm text-gray-500 bg-gray-100 p-2 rounded-lg mt-2">
+                        💡 {{ item.note }}
+                    </p>
+                </div>
             </div>
         </div>
 
-        <div v-if="tab==='info'" class="space-y-4">
-            <div class="p-5 bg-yellow-50 rounded-3xl border-2 border-dashed border-yellow-200 text-center">
-                <p class="font-bold mb-2">匯率換算 (0.21)</p>
-                <input v-model="jpy" type="number" class="w-full p-4 rounded-2xl border border-gray-200 text-center text-xl shadow-inner">
-                <p class="mt-4 text-3xl font-bold text-blue-600">≈ NT$ {{ (jpy*0.21).toFixed(0) }}</p>
+        <div v-if="currentTab === 'info'" class="space-y-6 animate-fade-in">
+            <div class="bg-yellow-50 border-2 border-dashed border-yellow-300 p-5 rounded-2xl">
+                <h3 class="font-bold text-yellow-800 mb-3 flex items-center"><i data-lucide="calculator" class="w-5 h-5 mr-2"></i>匯率試算 (0.21)</h3>
+                <div class="flex items-center space-x-3">
+                    <input type="number" v-model="jpyInput" class="w-full p-3 rounded-xl border border-yellow-200 text-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="日幣金額">
+                    <i data-lucide="arrow-right" class="text-yellow-400"></i>
+                    <div class="w-full p-3 bg-white rounded-xl border border-yellow-200 text-lg font-bold text-center text-gray-700">
+                        ${{ (jpyInput * 0.21).toFixed(0) }}
+                    </div>
+                </div>
             </div>
-            <div class="p-5 bg-blue-50 rounded-3xl border border-blue-100">
-                <p class="font-bold">住宿：Apartment hotel 11 umeda</p>
-                <button @click="goMap('Apartment hotel 11 umeda')" class="w-full py-4 bg-blue-600 text-white rounded-2xl mt-4 font-bold shadow-lg">開始飯店導航</button>
+
+            <div class="bg-white border-2 border-gray-200 p-5 rounded-2xl shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-2 flex items-center"><i data-lucide="hotel" class="w-5 h-5 mr-2"></i>住宿飯店</h3>
+                <p class="text-lg font-bold text-blue-600 mb-1">Apartment Hotel 11 Umeda</p>
+                <p class="text-sm text-gray-500 mb-4">〒530-00XX 大阪府大阪市北區...</p>
+                <button @click="openMap('Apartment Hotel 11 Umeda')" class="w-full bg-gray-800 text-white py-3 rounded-xl font-bold flex items-center justify-center">
+                    <i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>開啟 Google Maps
+                </button>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-100 p-5 rounded-2xl">
+                 <h3 class="font-bold text-blue-800 mb-3 flex items-center"><i data-lucide="plane" class="w-5 h-5 mr-2"></i>航班資訊</h3>
+                 <div class="space-y-3">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">2/20 去程 BR132</span>
+                        <span class="font-bold">08:20 TPE ➝ 11:55 KIX</span>
+                    </div>
+                    <div class="w-full h-[1px] bg-blue-200"></div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">2/25 回程 BR131</span>
+                        <span class="font-bold">18:10 KIX ➝ 20:25 TPE</span>
+                    </div>
+                 </div>
             </div>
         </div>
+
+        <div v-if="currentTab === 'shop'" class="grid grid-cols-2 gap-4">
+            <div v-for="(item, idx) in shopList" :key="idx" class="border-2 border-gray-800 rounded-xl p-3 bg-white">
+                <div class="h-24 bg-gray-100 rounded-lg mb-2 flex items-center justify-center text-gray-400">
+                    <i data-lucide="image" class="w-8 h-8"></i>
+                </div>
+                <div class="font-bold text-center">{{ item }}</div>
+            </div>
+        </div>
+
     </main>
 </div>
 
 <script>
     const { createApp, ref, onMounted, updated } = Vue;
+
     createApp({
         setup() {
-            const tab = ref('p'); const sIdx = ref(0); const jpy = ref(1000);
-            const days = [{w:'Fri',d:'2/20'},{w:'Sat',d:'2/21'},{w:'Sun',d:'2/22'},{w:'Mon',d:'2/23'},{w:'Tue',d:'2/24'},{w:'Wed',d:'2/25'}];
-            const itinerary = [
-                [{time:'11:55',n:'關西機場 (KIX)',t:'航班',note:'長榮 BR132，搭巴士往梅田'},{time:'15:00',n:'飯店 Check-in',t:'住宿',note:'Apartment hotel 11 umeda'},{time:'16:30',n:'道頓堀',t:'景點',note:'固力果拍照應援'}],
-                [{time:'11:00',n:'INTEX Osaka',t:'報到',note:'爸爸領馬拉松物資，參觀EXPO'},{time:'18:00',n:'碳水大餐',t:'美食',note:'吃烏龍麵或丼飯，爸爸加油'}],
-                [{time:'09:00',n:'大阪馬拉松',t:'應援',note:'全家出動！終點迎接爸爸'},{time:'18:30',n:'梅田慶功宴',t:'美食',note:'大口吃燒肉補營養'}],
-                [{time:'08:00',n:'天橋立',t:'景點',note:'胯下望龍絕景，假日人多要劃位'}],
-                [{time:'09:00',n:'木津市場',t:'美食',note:'鮮魚早餐'},{time:'13:00',n:'勝尾寺',t:'景點',note:'慶祝爸爸完賽的勝利達摩'}],
-                [{time:'11:00',n:'梅田補貨',t:'購物',note:'藥妝、伴手禮最後衝刺'},{time:'18:10',n:'關西機場',t:'航班',note:'BR131 返台，明年見！'}]
+            const currentTab = ref('plan');
+            const selectedDay = ref(0);
+            const jpyInput = ref(1000);
+
+            // 日期資料
+            const days = [
+                { w: 'Fri', d: '2/20' },
+                { w: 'Sat', d: '2/21' },
+                { w: 'Sun', d: '2/22' },
+                { w: 'Mon', d: '2/23' },
+                { w: 'Tue', d: '2/24' },
+                { w: 'Wed', d: '2/25' }
             ];
-            const goMap = (n) => window.open("google.com/maps/search/" + encodeURIComponent(n), '_blank');
-            const initIcons = () => { if(window.lucide) lucide.createIcons(); };
-            onMounted(initIcons); updated(initIcons);
-            return { tab, sIdx, jpy, days, itinerary, goMap };
+
+            // 詳細行程資料
+            const itinerary = [
+                // Day 1
+                [
+                    { time: '11:55', n: '抵達關西機場', type: '航班', note: '入境後搭乘利木津巴士前往梅田' },
+                    { time: '15:00', n: '飯店 Check-in', type: '住宿', note: 'Apartment Hotel 11 Umeda 放行李' },
+                    { time: '16:30', n: '心齋橋筋商店街', type: '逛街', note: '固力果跑跑人拍照、晚餐大阪燒' }
+                ],
+                // Day 2
+                [
+                    { time: '11:00', n: 'INTEX Osaka', type: '任務', note: '爸爸領馬拉松物資 (EXPO)' },
+                    { time: '13:00', n: '午餐', type: '美食', note: '會場附近簡單吃' },
+                    { time: '18:00', n: '賽前晚餐', type: '美食', note: '梅田吃烏龍麵 (碳水化合物)' }
+                ],
+                // Day 3 (馬拉松日)
+                [
+                    { time: '07:30', n: '大阪府廳前', type: '起點', note: '送爸爸起跑！加油！' },
+                    { time: '09:00', n: '應援時間', type: '應援', note: '移動至難波或終點附近' },
+                    { time: '14:30', n: '大阪城公園', type: '終點', note: '迎接爸爸完賽！遞外套保暖' },
+                    { time: '18:30', n: '慶功宴', type: '美食', note: '大口吃燒肉補充滿滿蛋白質' }
+                ],
+                // Day 4 (天橋立)
+                [
+                    { time: '08:00', n: 'JR 大阪站', type: '交通', note: '搭乘特急 Hashidate 前往天橋立' },
+                    { time: '11:00', n: '天橋立 View Land', type: '景點', note: '飛龍觀絕景 (胯下望龍)' },
+                    { time: '19:00', n: '回到梅田', type: '晚餐', note: '市區輕鬆吃' }
+                ],
+                // Day 5 (勝尾寺)
+                [
+                    { time: '09:00', n: '木津卸売市場', type: '早餐', note: '新鮮海鮮丼' },
+                    { time: '13:00', n: '勝尾寺', type: '景點', note: '滿滿的達摩不倒翁！祈求勝利' },
+                    { time: '16:00', n: 'Q\'s Mall', type: '逛街', note: '箕面萱野站旁商場' }
+                ],
+                // Day 6 (回程)
+                [
+                    { time: '11:00', n: '梅田百貨區', type: '購物', note: 'LUCUA / 阪急 最後補貨' },
+                    { time: '15:30', n: '前往機場', type: '交通', note: '搭巴士或電車前往 KIX' },
+                    { time: '18:10', n: 'BR131 起飛', type: '航班', note: '滿載而歸！' }
+                ]
+            ];
+
+            const shopList = ['合利他命 EX', '休足時間', 'EVE 止痛藥', '馬拉松能量膠', 'Wakamoto'];
+
+            // 開啟地圖功能
+            const openMap = (keyword) => {
+                const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(keyword)}`;
+                window.open(url, '_blank');
+            };
+
+            // 初始化圖標
+            const initIcons = () => {
+                if (window.lucide) window.lucide.createIcons();
+            };
+
+            onMounted(initIcons);
+            updated(initIcons);
+
+            return { currentTab, selectedDay, days, itinerary, jpyInput, shopList, openMap };
         }
     }).mount('#app');
 </script>
+
 </body>
 </html>
