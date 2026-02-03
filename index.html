@@ -6,10 +6,27 @@
     <title>大阪應援 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 防止白畫面的基礎樣式 */
-        body { background-color: #f3f4f6; color: #333; padding-bottom: 50px; }
-        .banner { width: 100%; height: 250px; background-color: #87CEEB; position: relative; }
-        .banner img { width: 100%; height: 100%; object-fit: cover; }
+        body { font-family: -apple-system, sans-serif; background-color: #f3f4f6; padding-bottom: 80px; }
+        
+        /* 圖片容器 */
+        .banner { 
+            width: 100%; 
+            height: 250px; 
+            background-color: #ddd; 
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            overflow: hidden;
+        }
+        .banner img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block;
+        }
+
         .container { 
             background: white; 
             border-radius: 20px 20px 0 0; 
@@ -19,19 +36,40 @@
             position: relative; 
             z-index: 10;
         }
+        
+        /* 行程卡片 */
         .card { 
-            border: 2px solid #333; 
-            border-radius: 12px; 
+            border-left: 4px solid #005CAF; 
+            background: white; 
             padding: 15px; 
             margin-bottom: 15px; 
-            box-shadow: 4px 4px 0 #333; 
-            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .btn { padding: 10px 20px; border-radius: 99px; font-weight: bold; cursor: pointer; }
-        .btn-active { background-color: #005CAF; color: white; }
-        .btn-inactive { background-color: white; color: #005CAF; border: 1px solid #eee; }
         
-        /* 隱藏/顯示分頁 */
+        .time { font-weight: bold; color: #005CAF; font-size: 1.1em; }
+        .title { font-weight: bold; font-size: 1.1em; margin-bottom: 5px; }
+        .desc { color: #555; font-size: 0.95em; line-height: 1.6; }
+        .note { background: #fffbe6; padding: 8px; border-radius: 5px; font-size: 0.9em; margin-top: 8px; color: #856404; }
+
+        /* 按鈕樣式 */
+        .nav-btn {
+            display: inline-block;
+            background: #eef2ff;
+            color: #005CAF;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 10px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        /* 分頁按鈕 */
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-weight: bold; color: #888; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #005CAF; border-bottom: 3px solid #005CAF; }
+
         .page { display: none; }
         .page.active { display: block; }
     </style>
@@ -39,92 +77,226 @@
 <body>
 
     <div class="banner">
-        <img src="picture.png" onerror="this.style.display='none'" alt="Banner">
+        <img src="./picture.png" alt="請確認GitHub上的檔名是否為 picture.png">
     </div>
 
     <div class="container">
-        
-        <div class="flex justify-center space-x-4 mb-6">
-            <button onclick="showPage('plan')" id="btn-plan" class="btn btn-active">行程表</button>
-            <button onclick="showPage('info')" id="btn-info" class="btn btn-inactive">資訊</button>
+        <div class="flex border-b mb-6">
+            <div onclick="showPage('plan')" id="t-plan" class="tab-btn active">每日行程</div>
+            <div onclick="showPage('info')" id="t-info" class="tab-btn">資訊 & 購物</div>
         </div>
 
         <div id="plan" class="page active">
-            <div class="bg-blue-100 p-4 rounded-xl mb-4 text-center">
-                <h2 class="text-xl font-bold text-blue-800">大阪天氣 8°C</h2>
-                <p class="text-sm text-gray-600">記得幫爸爸帶保暖外套</p>
-            </div>
-
-            <div class="space-y-4">
-                <div class="card" onclick="openMap('關西機場')">
-                    <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">2/20 (五)</span>
-                    <h3 class="text-lg font-bold mt-1">11:55 抵達關西機場</h3>
-                    <p class="text-gray-500 text-sm">搭利木津巴士直達梅田</p>
+            
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-600 text-white font-bold px-3 py-1 rounded mr-2">Day 1</div>
+                    <div class="font-bold text-gray-700">2/20 (五) 抵達・心齋橋</div>
                 </div>
                 
-                <div class="card" onclick="openMap('INTEX Osaka')">
-                    <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">2/21 (六)</span>
-                    <h3 class="text-lg font-bold mt-1">11:00 領馬拉松物資</h3>
-                    <p class="text-gray-500 text-sm">INTEX Osaka 會場 (多坐少站)</p>
+                <div class="card">
+                    <div class="time">11:55</div>
+                    <div class="title">抵達關西機場 (KIX)</div>
+                    <div class="desc">
+                        • 航班：長榮 BR132 (08:20 起飛)<br>
+                        • 任務：入境、領行李<br>
+                        • 交通：搭乘 <strong>利木津巴士 (Limousine Bus)</strong> 直達梅田新阪急飯店旁 (帶爸媽不用拖行李擠電車)。
+                    </div>
                 </div>
 
-                <div class="card" style="background: #fffbe6; border-color: #eab308;" onclick="openMap('大阪城公園')">
-                    <span class="bg-red-600 text-white text-xs px-2 py-1 rounded">2/22 (日) 比賽日</span>
-                    <h3 class="text-lg font-bold mt-1">09:00 大阪馬拉松應援</h3>
-                    <p class="text-gray-500 text-sm">起點：大阪府廳 / 終點：大阪城公園</p>
-                    <p class="text-red-500 font-bold text-sm mt-1">爸爸加油！🏅</p>
+                <div class="card">
+                    <div class="time">15:00</div>
+                    <div class="title">飯店 Check-in / 休息</div>
+                    <div class="desc">地点：Apartment hotel 11 umeda</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Apartment+hotel+11+umeda" target="_blank" class="nav-btn">📍 導航到飯店</a>
                 </div>
 
-                <div class="card" onclick="openMap('天橋立 View Land')">
-                    <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">2/23 (一)</span>
-                    <h3 class="text-lg font-bold mt-1">08:00 天橋立一日遊</h3>
-                    <p class="text-gray-500 text-sm">搭特急 Hashidate 看絕景</p>
+                <div class="card">
+                    <div class="time">16:30</div>
+                    <div class="title">心齋橋・道頓堀</div>
+                    <div class="desc">
+                        • 交通：梅田站 (御堂筋線) → 心齋橋站<br>
+                        • 行程：固力果跑跑人拍照、商店街隨意逛<br>
+                        • 晚餐：大阪燒或章魚燒
+                    </div>
+                    <div class="note">⚠️ 爸爸這幾天避免生食 (生魚片、生蠔)，以免賽前腸胃不適。</div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-600 text-white font-bold px-3 py-1 rounded mr-2">Day 2</div>
+                    <div class="font-bold text-gray-700">2/21 (六) 領物資</div>
                 </div>
 
-                <div class="card" onclick="openMap('勝尾寺')">
-                    <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded">2/24 (二)</span>
-                    <h3 class="text-lg font-bold mt-1">13:00 勝尾寺</h3>
-                    <p class="text-gray-500 text-sm">勝利達摩！慶祝完賽</p>
+                <div class="card">
+                    <div class="time">11:00</div>
+                    <div class="title">前往 INTEX Osaka 報到</div>
+                    <div class="desc">
+                        • 交通：梅田 → 本町 (轉中央線) → Cosmosquare<br>
+                        • 任務：領取號碼布、參觀 EXPO
+                    </div>
+                    <div class="note">⚠️ 會場很大，請爸爸「多坐少站」，保留腿力。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=INTEX+Osaka" target="_blank" class="nav-btn">📍 導航到會場</a>
+                </div>
+
+                <div class="card">
+                    <div class="time">18:00</div>
+                    <div class="title">賽前晚餐 (Carbo-loading)</div>
+                    <div class="desc">建議吃烏龍麵、親子丼或義大利麵 (碳水化合物)。早點休息，明天 5:00 起床。</div>
+                </div>
+            </div>
+
+            <div class="mb-8 border-2 border-yellow-400 rounded-xl p-2 bg-yellow-50">
+                <div class="flex items-center mb-4">
+                    <div class="bg-red-600 text-white font-bold px-3 py-1 rounded mr-2">Day 3</div>
+                    <div class="font-bold text-red-700">2/22 (日) 馬拉松比賽日 🏅</div>
+                </div>
+
+                <div class="card">
+                    <div class="time">07:00</div>
+                    <div class="title">送爸爸去起點</div>
+                    <div class="desc">地點：大阪府廳前</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=大阪府廳" target="_blank" class="nav-btn">📍 導航到起點</a>
+                </div>
+
+                <div class="card">
+                    <div class="time">09:00 - 15:00</div>
+                    <div class="title">全家應援時間</div>
+                    <div class="desc">
+                        • 媽媽 & 妳：開啟應援模式！<br>
+                        • 推薦點：難波/御堂筋 (最熱鬧)、終點前
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="time">15:00</div>
+                    <div class="title">終點會合</div>
+                    <div class="desc">
+                        地點：大阪城公園<br>
+                        ⚠️ 比完賽身體會冷，記得帶備用外套給爸爸穿。
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=大阪城公園" target="_blank" class="nav-btn">📍 導航到終點</a>
+                </div>
+
+                <div class="card">
+                    <div class="time">18:30</div>
+                    <div class="title">慶功宴 🍺</div>
+                    <div class="desc">梅田吃燒肉或居酒屋，大口吃肉補蛋白質！</div>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-600 text-white font-bold px-3 py-1 rounded mr-2">Day 4</div>
+                    <div class="font-bold text-gray-700">2/23 (一) 天橋立</div>
+                </div>
+                
+                <div class="card">
+                    <div class="time">07:30</div>
+                    <div class="title">搭乘 JR 特急 Hashidate</div>
+                    <div class="desc">
+                        ⚠️ 國定假日人多，務必提前劃好指定席。<br>
+                        車程約 2.5 小時，車上補眠。
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="time">10:30</div>
+                    <div class="title">天橋立 View Land</div>
+                    <div class="desc">搭纜車上山看「胯下望龍」絕景。午餐在周邊散步解決。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=天橋立View+Land" target="_blank" class="nav-btn">📍 導航到景點</a>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-600 text-white font-bold px-3 py-1 rounded mr-2">Day 5</div>
+                    <div class="font-bold text-gray-700">2/24 (二) 木津市場 + 勝尾寺</div>
+                </div>
+
+                <div class="card">
+                    <div class="time">08:30</div>
+                    <div class="title">木津卸売市場</div>
+                    <div class="desc">大國町站下車。早餐吃海鮮丼、玉子燒 (在地感強)。</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=木津卸売市場" target="_blank" class="nav-btn">📍 導航</a>
+                </div>
+
+                <div class="card">
+                    <div class="time">13:15</div>
+                    <div class="title">勝尾寺 (勝利達摩)</div>
+                    <div class="desc">
+                        交通：御堂筋線往北衝到底 (箕面萱野站) → 轉公車。<br>
+                        亮點：滿滿的不倒翁，買個「勝ちダルマ」紀念完賽。
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=勝尾寺" target="_blank" class="nav-btn">📍 導航</a>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="bg-blue-600 text-white font-bold px-3 py-1 rounded mr-2">Day 6</div>
+                    <div class="font-bold text-gray-700">2/25 (三) 回家</div>
+                </div>
+
+                <div class="card">
+                    <div class="time">11:00</div>
+                    <div class="title">梅田最後衝刺</div>
+                    <div class="desc">地點：LUCUA / 阪急百貨。補貨藥妝、伴手禮。</div>
+                </div>
+
+                <div class="card">
+                    <div class="time">15:30</div>
+                    <div class="title">前往機場</div>
+                    <div class="desc">提早出發以免遇上下班尖峰。</div>
+                </div>
+                
+                <div class="card">
+                    <div class="time">18:10</div>
+                    <div class="title">飛機起飛 ✈️</div>
+                    <div class="desc">長榮 BR131，預計 20:25 抵達台灣。</div>
                 </div>
             </div>
         </div>
 
         <div id="info" class="page">
             <div class="card">
-                <h3 class="font-bold">匯率換算 (0.21)</h3>
-                <input type="number" id="jpy" placeholder="輸入日幣" class="border p-2 w-full mt-2 rounded" oninput="calc()">
-                <p class="text-xl font-bold text-blue-600 mt-2" id="twd">NT$ 0</p>
+                <div class="title">💴 匯率換算 (0.21)</div>
+                <input type="number" id="jpy" oninput="calc()" placeholder="輸入日幣..." class="w-full p-3 border rounded mt-2 text-lg">
+                <div id="twd" class="text-2xl font-bold text-blue-600 mt-2 text-center">NT$ 0</div>
             </div>
-            
+
             <div class="card">
-                <h3 class="font-bold">住宿資訊</h3>
-                <p>Apartment hotel 11 umeda</p>
-                <button onclick="openMap('Apartment hotel 11 umeda')" class="w-full bg-black text-white p-2 rounded mt-2">導航</button>
+                <div class="title">🏨 住宿資訊</div>
+                <div class="desc mt-2">
+                    <strong>Apartment hotel 11 umeda</strong><br>
+                    大阪府大阪市北區...
+                </div>
+                <a href="https://www.google.com/maps/search/?api=1&query=Apartment+hotel+11+umeda" target="_blank" class="nav-btn">📍 開啟地圖</a>
+            </div>
+
+             <div class="card">
+                <div class="title">🛍️ 購物清單</div>
+                <ul class="list-disc pl-5 mt-2 desc">
+                    <li>合利他命 EX Plus</li>
+                    <li>休足時間 (給爸爸貼腿)</li>
+                    <li>馬拉松能量膠</li>
+                    <li>勝尾寺達摩</li>
+                </ul>
             </div>
         </div>
 
     </div>
 
     <script>
-        // 簡單的切換功能 (純 JS)
         function showPage(pageId) {
-            // 隱藏所有頁面
-            document.getElementById('plan').classList.remove('active');
-            document.getElementById('info').classList.remove('active');
-            // 顯示目標頁面
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             
-            // 按鈕變色
-            document.getElementById('btn-plan').className = pageId === 'plan' ? 'btn btn-active' : 'btn btn-inactive';
-            document.getElementById('btn-info').className = pageId === 'info' ? 'btn btn-active' : 'btn btn-inactive';
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('t-' + pageId).classList.add('active');
         }
 
-        // 開地圖
-        function openMap(loc) {
-            window.open('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(loc));
-        }
-
-        // 算匯率
         function calc() {
             let val = document.getElementById('jpy').value;
             document.getElementById('twd').innerText = 'NT$ ' + (val * 0.21).toFixed(0);
